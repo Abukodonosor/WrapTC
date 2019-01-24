@@ -124,47 +124,50 @@ hangupButton.addEventListener('click', hangupAction)
 ////////////////////dinamic parameters
 
 function callAction() {
-  callButton.disabled = true;
+  callButton.disabled = false;
   hangupButton.disabled = false;
 
-  trace('Starting call.');
-  // startTime = window.performance.now();
+  console.log("=1")
+  console.log(base_enviroment);
+  base_enviroment.callPeer(remote_enviroment);
+  // trace('Starting call.');
+  // // startTime = window.performance.now();
 
-  // Get local media stream tracks.
-  const videoTracks = base_enviroment.localStream.getVideoTracks();
-  const audioTracks = base_enviroment.localStream.getAudioTracks();
-  if (videoTracks.length > 0) {
-    trace(`Using video device: ${videoTracks[0].label}.`);
-  }
-  if (audioTracks.length > 0) {
-    trace(`Using audio device: ${audioTracks[0].label}.`);
-  }
+  // // Get local media stream tracks.
+  // const videoTracks = base_enviroment.localStream.getVideoTracks();
+  // const audioTracks = base_enviroment.localStream.getAudioTracks();
+  // if (videoTracks.length > 0) {
+  //   trace(`Using video device: ${videoTracks[0].label}.`);
+  // }
+  // if (audioTracks.length > 0) {
+  //   trace(`Using audio device: ${audioTracks[0].label}.`);
+  // }
 
-  const servers = null;  // Allows for RTC server configuration.
+  // const servers = null;  // Allows for RTC server configuration.
 
-  // Create peer connections and add behavior.
+  // // Create peer connections and add behavior.
   // base_enviroment.localPeerConnection = new RTCPeerConnection(servers);
-  trace('Created local peer connection object localPeerConnection.');
+  // trace('Created local peer connection object localPeerConnection.');
 
-  base_enviroment.localPeerConnection.addEventListener('icecandidate', handleConnection);
-  base_enviroment.localPeerConnection.addEventListener(
-    'iceconnectionstatechange', handleConnectionChange);
+  // base_enviroment.localPeerConnection.addEventListener('icecandidate', handleConnection);
+  // base_enviroment.localPeerConnection.addEventListener(
+  //   'iceconnectionstatechange', handleConnectionChange);
 
-  remotePeerConnection = new RTCPeerConnection(servers);
-  trace('Created remote peer connection object remotePeerConnection.');
+  // remotePeerConnection = new RTCPeerConnection(servers);
+  // trace('Created remote peer connection object remotePeerConnection.');
 
-  remotePeerConnection.addEventListener('icecandidate', handleConnection);
-  remotePeerConnection.addEventListener(
-    'iceconnectionstatechange', handleConnectionChange);
-  remotePeerConnection.addEventListener('addstream', gotRemoteMediaStream);
+  // remotePeerConnection.addEventListener('icecandidate', handleConnection);
+  // remotePeerConnection.addEventListener(
+  //   'iceconnectionstatechange', handleConnectionChange);
+  // remotePeerConnection.addEventListener('addstream', gotRemoteMediaStream);
 
-  // Add local stream to connection and create offer to connect.
-  base_enviroment.localPeerConnection.addStream(base_enviroment.localStream);
-  trace('Added local stream to localPeerConnection.');
+  // // Add local stream to connection and create offer to connect.
+  // base_enviroment.localPeerConnection.addStream(base_enviroment.localStream);
+  // trace('Added local stream to localPeerConnection.');
 
-  trace('localPeerConnection createOffer start.');
-  base_enviroment.localPeerConnection.createOffer(offerOptions)
-    .then(createdOffer).catch(setSessionDescriptionError);
+  // trace('localPeerConnection createOffer start.');
+  // base_enviroment.localPeerConnection.createOffer(offerOptions)
+  //   .then(createdOffer).catch(setSessionDescriptionError);
 }
 
 function hangupAction() {
