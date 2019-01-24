@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>HelloCloud</title>
+    <link rel="stylesheet" type="text/css" href="style.css">
+</head>
+
+<body>
+
+
+    <div class="content">
+        <div class="content-item">
+            <h3>My video enviroment:</h3>
+            <video class='video-options' id='video0' autoplay playsinline></video>
+            <button id='call'>call</button>
+            <button id='end'>end</button>
+        </div>
+
+        <div class="content-item">
+            <h3>Remote enviroment:</h3>
+            <video class='video-options' id='video1' autoplay playsinline></video>
+            <!-- <button>call</button>
+            <button>end</button> -->
+        </div>
+
+
+    </div>
+    
+    <script src="https://webrtc.github.io/adapter/adapter-latest.js"></script>
+    <script src='./webRTC/LocalEnviroment.js'></script>
+    <script src='main.js'></script>
+
+</body>
+
+</html>
