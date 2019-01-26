@@ -34,4 +34,18 @@ class LocalEnviroment{
         console.log('navigator.getUserMedia error: ', error);
     }
 
+
+    callPeer(){
+        
+        let videoTracks = base_enviroment.localStream.getVideoTracks();
+        let audioTracks = base_enviroment.localStream.getAudioTracks();
+        if (videoTracks.length > 0) {
+          trace(`Using video device: ${videoTracks[0].label}.`);
+        }
+        if (audioTracks.length > 0) {
+          trace(`Using audio device: ${audioTracks[0].label}.`);
+        }
+    
+    }
+
 }
