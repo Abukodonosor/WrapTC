@@ -11,7 +11,7 @@ class LocalEnviroment{
         //parameters for offer (to receive which kind of stream of remote peer)
         this.offerConfig = offerConfig;
         this.localStream;
-        this.localPeerConnection = new RTCPeerConnection(servers);;
+        // this.localPeerConnection = new RTCPeerConnection(this.server);
     }
     /* run webRtc instance in local video element*/
     runLocal(){
