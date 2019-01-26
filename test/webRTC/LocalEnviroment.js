@@ -54,25 +54,7 @@ class LocalEnviroment{
         trace(`${getPeerName(peerConnection)} ICE state: ` +
               `${peerConnection.iceConnectionState}.`);
     }
-    handleConnection(event) {
-        const peerConnection = event.target;
-        const iceCandidate = event.candidate;
-      
-        if (iceCandidate) {
-            const newIceCandidate = new RTCIceCandidate(iceCandidate);
-            const otherPeer = this.getOtherPeer(peerConnection);
-      
-            otherPeer
-                .addIceCandidate(newIceCandidate)
-                .then(() => {
-                    this.handleConnectionSuccess(peerConnection);
-                })
-                .catch((error) => {
-                    this.handleConnectionFailure(peerConnection, error);
-                });
-        }
-        //   trace(`${getPeerName(peerConnection)} ICE candidate:\n` +`${event.candidate.candidate}.`);
-    }
+
     handleConnectionSuccess(peerConnection) {
         // trace(`${getPeerName(peerConnection)} addIceCandidate success.`);
     }
@@ -99,26 +81,25 @@ class LocalEnviroment{
     createdAnswer(description) {
         
         // trace(`Answer from remotePeerConnection:\n${description.sdp}.`);
-       
         // trace('remotePeerConnection setLocalDescription start.');
         this.remotePeer.setLocalDescription(description)
             .then(() => {
-                this.setLocalDescriptionSuccess(remotePeerConnection);
+                this.setLocalDescriptionSuccess(this.remotePeer);
             }).catch(setSessionDescriptionError);
         
         // trace('localPeerConnection setRemoteDescription start.');
         this.remotePeer.localPeerConnection.setRemoteDescription(description)
             .then(() => {
-                this.setRemoteDescriptionSuccess(this.localPeer.localPeerConnection);
+                this.setRemoteDescriptionSuccess(this.localPeerConnection);
             }).catch(setSessionDescriptionError);
     }
      
     createdOffer(description) {
         // trace(`Offer from localPeerConnection:\n${description.sdp}`);
         // trace('localPeerConnection setLocalDescription start.');
-        this.localPeer.localPeerConnection.setLocalDescription(description)
+        this.localPeerConnection.setLocalDescription(description)
           .then(() => {
-            this.setLocalDescriptionSuccess(this.localPeer.localPeerConnection);
+            this.setLocalDescriptionSuccess(this.localPeerConnection);
           }).catch(this.setSessionDescriptionError);
       
         // trace('remotePeerConnection setRemoteDescription start.');
@@ -135,12 +116,12 @@ class LocalEnviroment{
 
 
     callPeer(remotePeer){
-        this.remotePeer = remotePeer
-        this.localPeer = this
+        // this.remotePeer = remotePeer
+        
 
         
-        let videoTracks = this.localPeer.localStream.getVideoTracks();
-        let audioTracks = this.localPeer.localStream.getAudioTracks();
+        let videoTracks = this.localStream.getVideoTracks();
+        let audioTracks = this.localStream.getAudioTracks();
 
         if (videoTracks.length > 0) {
             // trace(`Using video device: ${videoTracks[0].label}.`);
@@ -148,26 +129,44 @@ class LocalEnviroment{
         if (audioTracks.length > 0) {
             // trace(`Using audio device: ${audioTracks[0].label}.`);
         }
-
-
         
-        this.localPeer.localPeerConnection = new RTCPeerConnection(this.servers);
-            // trace('Created local peer connection object localPeerConnection.');
-            this.localPeer.localPeerConnection.addEventListener('icecandidate', this.handleConnection);
-            this.localPeer.localPeerConnection.addEventListener('iceconnectionstatechange', this.handleConnectionChange);
-        
-        remotePeer = new RTCPeerConnection(this.servers);
-            // trace('Created remote peer connection object remotePeerConnection.');
-            remotePeer.addEventListener('icecandidate', this.handleConnection);
-            remotePeer.addEventListener('iceconnectionstatechange', this.handleConnectionChange);
-            remotePeer.addEventListener('addstream', this.gotRemoteMediaStream);
+        this.localPeerConnection = new RTCPeerConnection(this.servers);
+        // trace('Created local peer connection object localPeerConnection.');
+        this.localPeerConnection.addEventListener('icecandidate', handleConnection);
+        this.localPeerConnection.addEventListener('iceconnectionstatechange', this.handleConnectionChange);
+
+        this.remotePeer = new RTCPeerConnection(this.servers);
+        // trace('Created remote peer connection object remotePeerConnection.');
+        this.remotePeer.addEventListener('icecandidate', this.handleConnection);
+        this.remotePeer.addEventListener('iceconnectionstatechange', this.handleConnectionChange);
+        this.remotePeer.addEventListener('addstream', this.gotRemoteMediaStream);
     
-        this.localPeer.localPeerConnection.addStream(this.localPeer.localStream);
+        this.localPeerConnection.addStream(this.localStream);
         // trace('Added local stream to localPeerConnection.');
         
         // trace('localPeerConnection createOffer start.');
-        this.localPeer.localPeerConnection.createOffer(this.offerConfig)
+        this.localPeerConnection.createOffer(this.offerConfig)
         .then(this.createdOffer).catch(this.setSessionDescriptionError);
     }
 
+}
+
+function handleConnection(event) {
+    const peerConnection = event.target;
+    const iceCandidate = event.candidate;
+    console.log("DJOKAA")
+    if (iceCandidate) {
+        const newIceCandidate = new RTCIceCandidate(iceCandidate);
+        const otherPeer = this.getOtherPeer(peerConnection);
+  
+        otherPeer
+            .addIceCandidate(newIceCandidate)
+            .then(() => {
+                this.handleConnectionSuccess(peerConnection);
+            })
+            .catch((error) => {
+                this.handleConnectionFailure(peerConnection, error);
+            });
+    }
+    //   trace(`${getPeerName(peerConnection)} ICE candidate:\n` +`${event.candidate.candidate}.`);
 }
