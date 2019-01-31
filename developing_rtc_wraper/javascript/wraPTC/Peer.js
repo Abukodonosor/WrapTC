@@ -2,15 +2,19 @@
 
 class Peer extends rtcAbstraction {
 
-    constructor(mediaStreamConstraints, localVieoId){
+    constructor(config, localVieoId){
         super();
         //streatming options (audio,video, with expec resolution)
-        this.mediaStreamConstraints = mediaStreamConstraints;   
+        this.mediaStreamConstraints = config.streamingConfig;   
+        this.offerOptions = config.offerOptions;
+
         this.localPeerConnection;
         //
         this.localVideoId = localVieoId;
         this.localStream;
 
+        //parameter for local peer maneging
+        this.servers = null
     }
 
     /* This method allowe you to see output of your camera in local */
@@ -21,17 +25,38 @@ class Peer extends rtcAbstraction {
 
     callPeer(remotePeer){
 
-        let videoTracks = localStream.getVideoTracks();
-        let audioTracks = localStream.getAudioTracks();
+        let videoTracks = this.localStream.getVideoTracks();
+        let audioTracks = this.localStream.getAudioTracks();
 
         if (videoTracks.length > 0) {
-            trace(`Using video device: ${videoTracks[0].label}.`);
+            ErrorHandler.trace(`Using video device: ${videoTracks[0].label}.`);
         }
         if (audioTracks.length > 0) {
-            trace(`Using audio device: ${audioTracks[0].label}.`);
+            ErrorHandler.trace(`Using audio device: ${audioTracks[0].label}.`);
         }
 
+        this.localPeerConnection = new RTCPeerConnection(this.servers);
+        ErrorHandler.trace('Created local peer connection object localPeerConnection.');
+        this.localPeerConnection.addEventListener('icecandidate', ErrorHandler.handleConnection.bind(this));
+        this.localPeerConnection.addEventListener('iceconnectionstatechange', ErrorHandler.handleConnectionChange.bind(this));
         
+
+        remotePeer.localPeerConnection = new RTCPeerConnection(this.servers);
+        ErrorHandler.trace('Created remote peer connection object remotePeerConnection.');
+
+        remotePeer.localPeerConnection.addEventListener('icecandidate', ErrorHandler.handleConnection.bind(remotePeer));
+        remotePeer.localPeerConnection.addEventListener('iceconnectionstatechange', ErrorHandler.handleConnectionChange.bind(remotePeer));
+        remotePeer.localPeerConnection.addEventListener('addstream', remotePeer.gotLocalMediaStream);
+        
+        // Add local stream to connection and create offer to connect.
+        this.localPeerConnection.addStream(this.localStream);
+        ErrorHandler.trace('Added local stream to localPeerConnection.');
+
+        ErrorHandler.trace('localPeerConnection createOffer start.');
+        this.localPeerConnection.createOffer(offerOptions)
+        .then(createdOffer).catch(setSessionDescriptionError);
+
+
     }
 
 }   

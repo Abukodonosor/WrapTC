@@ -6,16 +6,26 @@ const streamingConfig = {
     video: true,
 };
 
+const offerOptions = {
+    offerToReceiveVideo: 1,
+};
+
+const config = {
+    streamingConfig,
+    offerOptions
+};
+
+
 //local peer
 var video0_id = document.getElementById("video0");
-var localPeer = new Peer(streamingConfig, video0_id);
+var localPeer = new Peer(config, video0_id);
 
 //remote peer
 var video1_id = document.getElementById("video1");
-var remotePeer = new Peer(streamingConfig, video1_id);
+var remotePeer = new Peer(config, video1_id);
 
 localPeer.startLocalStreaming();
-remotePeer.startLocalStreaming();
+// remotePeer.startLocalStreaming();
 
 
 
@@ -30,6 +40,9 @@ endButton.addEventListener('click', endCall);
 
 function doCall(){
     console.log("Start call ...");
+
+    localPeer.callPeer(remotePeer);
+
 }
 
 function endCall(){
