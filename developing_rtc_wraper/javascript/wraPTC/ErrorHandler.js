@@ -61,44 +61,20 @@ class ErrorHandler {
 
     // Logs that the connection succeeded.
     static handleConnectionSuccess(peerConnection) {
-        ErrorHandler.trace(`${getPeerName(peerConnection)} addIceCandidate success.`);
-    };
-
-    static createdOffer(description) {
-        ErrorHandler.trace(`Offer from localPeerConnection:\n${description.sdp}`);
-        
-        ErrorHandler.trace('localPeerConnection setLocalDescription start.');
-        this.localPeerConnection.setLocalDescription(description)
-            .then(() => {
-            setLocalDescriptionSuccess(this.localPeerConnection);
-            }).catch(ErrorHandler.setSessionDescriptionError);
-        
-            ErrorHandler.trace('remotePeerConnection setRemoteDescription start.');
-            remotePeer.localPeerConnection.setRemoteDescription(description)
-            .then(() => {
-            setRemoteDescriptionSuccess(remotePeer.localPeerConnection);
-            }).catch(ErrorHandler.setSessionDescriptionError);
-        
-        ErrorHandler.trace('remotePeerConnection createAnswer start.');
-        remotePeer.localPeerConnection.createAnswer()
-            .then(createdAnswer)
-            .catch(ErrorHandler.setSessionDescriptionError);
+        ErrorHandler.trace(`${ErrorHandler.getPeerName(peerConnection)} addIceCandidate success.`);
     }
 
-    // static createdAnswer(description) {
-    //     trace(`Answer from remotePeerConnection:\n${description.sdp}.`);
-      
-    //     trace('remotePeerConnection setLocalDescription start.');
-    //     remotePeerConnection.setLocalDescription(description)
-    //       .then(() => {
-    //         setLocalDescriptionSuccess(remotePeerConnection);
-    //       }).catch(setSessionDescriptionError);
-      
-    //     trace('localPeerConnection setRemoteDescription start.');
-    //     localPeerConnection.setRemoteDescription(description)
-    //       .then(() => {
-    //         setRemoteDescriptionSuccess(localPeerConnection);
-    //       }).catch(setSessionDescriptionError);
-    //   }
+    static setLocalDescriptionSuccess(peerConnection) {
+        ErrorHandler.setDescriptionSuccess(peerConnection, 'setLocalDescription');
+    }
     
+    // Logs success when setting session description.
+    static setDescriptionSuccess(peerConnection, functionName) {
+        const peerName = ErrorHandler.getPeerName(peerConnection);
+        ErrorHandler.trace(`${peerName} ${functionName} complete.`);
+    }
+  
+    static setRemoteDescriptionSuccess(peerConnection) {
+        ErrorHandler.setDescriptionSuccess(peerConnection, 'setRemoteDescription');
+    }
 }

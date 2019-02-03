@@ -37,16 +37,16 @@ class Peer extends rtcAbstraction {
 
         this.localPeerConnection = new RTCPeerConnection(this.servers);
         ErrorHandler.trace('Created local peer connection object localPeerConnection.');
-        this.localPeerConnection.addEventListener('icecandidate', ErrorHandler.handleConnection.bind(this));
-        this.localPeerConnection.addEventListener('iceconnectionstatechange', ErrorHandler.handleConnectionChange.bind(this));
+        this.localPeerConnection.addEventListener('icecandidate', ErrorHandler.handleConnection);
+        this.localPeerConnection.addEventListener('iceconnectionstatechange', ErrorHandler.handleConnectionChange);
         
 
         remotePeer.localPeerConnection = new RTCPeerConnection(this.servers);
         ErrorHandler.trace('Created remote peer connection object remotePeerConnection.');
 
-        remotePeer.localPeerConnection.addEventListener('icecandidate', ErrorHandler.handleConnection.bind(remotePeer));
-        remotePeer.localPeerConnection.addEventListener('iceconnectionstatechange', ErrorHandler.handleConnectionChange.bind(remotePeer));
-        remotePeer.localPeerConnection.addEventListener('addstream', remotePeer.gotLocalMediaStream);
+        remotePeer.localPeerConnection.addEventListener('icecandidate', ErrorHandler.handleConnection);
+        remotePeer.localPeerConnection.addEventListener('iceconnectionstatechange', ErrorHandler.handleConnectionChange);
+        remotePeer.localPeerConnection.addEventListener('addstream', rtcAbstraction.gotRemoteMediaStream.bind(remotePeer));
         
         // Add local stream to connection and create offer to connect.
         this.localPeerConnection.addStream(this.localStream);
@@ -54,7 +54,7 @@ class Peer extends rtcAbstraction {
 
         ErrorHandler.trace('localPeerConnection createOffer start.');
         this.localPeerConnection.createOffer(this.offerOptions)
-        .then(ErrorHandler.createdOffer.bind(this)).catch(ErrorHandler.setSessionDescriptionError);
+        .then(rtcAbstraction.createdOffer).catch(ErrorHandler.setSessionDescriptionError);
 
 
     }
