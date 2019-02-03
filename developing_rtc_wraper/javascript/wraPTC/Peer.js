@@ -53,8 +53,8 @@ class Peer extends rtcAbstraction {
         ErrorHandler.trace('Added local stream to localPeerConnection.');
 
         ErrorHandler.trace('localPeerConnection createOffer start.');
-        this.localPeerConnection.createOffer(offerOptions)
-        .then(createdOffer).catch(setSessionDescriptionError);
+        this.localPeerConnection.createOffer(this.offerOptions)
+        .then(ErrorHandler.createdOffer.bind(this)).catch(ErrorHandler.setSessionDescriptionError);
 
 
     }
