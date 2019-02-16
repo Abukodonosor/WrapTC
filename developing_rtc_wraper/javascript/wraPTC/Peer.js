@@ -59,4 +59,14 @@ class Peer extends rtcAbstraction {
 
     }
 
+    endCall(remotePeer){
+        
+        this.localPeerConnection.close();
+        remotePeer.localPeerConnection.close();
+        this.localPeerConnection = null;
+        remotePeer.localPeerConnection = null;
+        ErrorHandler.trace('Ending call.');
+          
+    }
+
 }   

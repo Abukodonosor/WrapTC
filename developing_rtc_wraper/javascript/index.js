@@ -29,7 +29,6 @@ localPeer.startLocalStreaming();
 
 
 
-
 var callButton = document.getElementById("call");
 var endButton = document.getElementById("end");
 
@@ -47,6 +46,7 @@ function doCall(){
 
 function endCall(){
     console.log("End call ...");
+    localPeer.endCall(remotePeer)
 }
 
   
